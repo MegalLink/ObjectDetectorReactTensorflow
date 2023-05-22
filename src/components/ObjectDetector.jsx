@@ -1,14 +1,18 @@
 // Import dependencies
-import React, { useRef, useEffect,useState } from "react";
+import React, { useRef,useState } from "react";
 import * as cocossd from "@tensorflow-models/coco-ssd";
 import Webcam from "react-webcam";
+// eslint-disable-next-line
 import * as tf from "@tensorflow/tfjs";
 import { Alert } from "@mui/material";
+import { useNavigate, useParams } from 'react-router-dom';
 
-export function ObjectDetector({objectToMatch}) {
+export function ObjectDetector() {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
   const [matched,setMached]= useState(false);
+  const { objectToMatch } = useParams();
+  const navigate = useNavigate();
 
   let interval;
 
@@ -47,26 +51,28 @@ export function ObjectDetector({objectToMatch}) {
 
       // Draw mesh
       const ctx = canvasRef.current.getContext("2d");
-      handleDetection(obj, ctx)
+      const detected=handleDetection(obj, ctx)
+      if (detected){
+        setMached(detected)
+        clearInterval(interval)
+      }
     }
   };
 
   const handleDetection = (detections, ctx) => {
     // Loop through each prediction
-    detections.forEach((prediction) => {
+    const objectsMatched=detections.map((prediction) => {
       // Extract boxes and classes
-      const [x, y] = prediction["bbox"];
+      //const [x, y] = prediction["bbox"];
       const text = prediction["class"];
-  
       const match=text.trim() === objectToMatch
-      console.log("text", text);
-      console.log("matching",matched)
+       /*
       if (match) {
         console.log("text", text);
         console.log("Matched",match);
-        setMached(true)
   
-        // Set styling
+        Set styling
+
         const color = Math.floor(Math.random() * 16777215).toString(16);
         ctx.strokeStyle = "#" + color;
         ctx.font = "50px Arial";
@@ -74,9 +80,14 @@ export function ObjectDetector({objectToMatch}) {
         // Draw rectangles and text
         ctx.fillStyle = "#" + color;
         ctx.fillText(text, x, y);
-        clearInterval(interval)
+        
       }
-    });
+      */
+      
+      return match
+    })
+
+    return objectsMatched.find((obj)=>obj===true)
   };
 
   return (
@@ -100,9 +111,10 @@ export function ObjectDetector({objectToMatch}) {
         />
       </header>
       <div>
-       {matched??<Alert severity="success">Detected successfully</Alert>}
+        {matched&&<Alert severity="success">Detected successfully</Alert>}
         <button onClick={() => runCoco()}>Start Detection</button>
         <button onClick={() => clearInterval(interval)}>Stop Detection</button>
+        <button onClick={() => navigate("/")}>Main menu</button>
       </div>
     </div>
   );

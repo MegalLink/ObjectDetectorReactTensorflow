@@ -1,27 +1,40 @@
 // Import dependencies
-import React, { useRef, useEffect } from "react";
-import Webcam from "react-webcam";
+import React from "react";
 import "./App.css";
-import { ObjectDetector } from "./components/ObjectDetector.jsx";
 import { Container } from "@mui/material";
-import Divider from "@mui/material/Divider";
 import Paper from "@mui/material/Paper";
 import MenuList from "@mui/material/MenuList";
 import MenuItem from "@mui/material/MenuItem";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Typography from "@mui/material/Typography";
-import Cloud from "@mui/icons-material/Cloud";
 import PlayArrow from "@mui/icons-material/PlayArrow";
 import Settings from "@mui/icons-material/Settings";
+import { useNavigate } from "react-router-dom";
 
 function App() {
+  const navigate = useNavigate();
+
   return (
     <>
-      <Container maxWidth="sm">
-        <Paper sx={{ width: 320, maxWidth: "100%" }}>
+      <Container
+        sx={{
+          backgroundColor: "red",
+          height: "100vh",
+          width: "100vw",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Paper
+          sx={{
+            width: 320,
+            maxWidth: "100%",
+          }}
+        >
           <MenuList>
-            <MenuItem>
+            <MenuItem onClick={() => navigate("/game/cell phone")}>
               <ListItemIcon>
                 <PlayArrow fontSize="small" />
               </ListItemIcon>
@@ -39,17 +52,9 @@ function App() {
                 ⌘C
               </Typography>
             </MenuItem>
-            <Divider />
-            <MenuItem>
-              <ListItemIcon>
-                <Cloud fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Web Clipboard</ListItemText>
-            </MenuItem>
           </MenuList>
         </Paper>
       </Container>
-      <ObjectDetector objectToMatch={"cell phone"} />
     </>
   );
 }
